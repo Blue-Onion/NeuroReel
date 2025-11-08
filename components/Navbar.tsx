@@ -7,10 +7,12 @@ const Navbar = () => {
   return (
     <header className="mx-auto px-5 b max-w-9xl ">
       <nav className="w-full shadow border-[0px] bg-white px-5 py-3 rounded-full flex justify-between items-center">
+        <Link href={"/"}>
         <div className="text-xl font-extrabold">NeuroReel</div>
+        </Link>
         
         <div className="flex items-center gap-5">
-          <Link href={"/"}>
+          <Link href={"/create"}>
             <Video className="" />
           </Link>
           <Link href={"/"}>
