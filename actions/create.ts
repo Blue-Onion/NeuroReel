@@ -45,7 +45,7 @@ export async function extractText(file: File): Promise<string> {
     data.ParsedResults?.map((r) => r.ParsedText.trim()).join(" ") ||
     "No text found.";
 
-  console.log("📄 Extracted text:", fullText);
+
   return fullText;
 }
 
@@ -88,12 +88,12 @@ export async function generateScene(text: string): Promise<string[]> {
     const response = await result.response;
     const fullResponse = response.text();
 
-    console.log("🎬 Generated scenes response:", fullResponse);
+
 
     // Parse the response to extract both scenes
     const scenes = parseScenesFromResponse(fullResponse);
     
-    console.log("📝 Parsed scenes:", scenes);
+
     return scenes;
   } catch (error) {
     console.error("❌ Gemini API error:", error);
@@ -184,12 +184,12 @@ export async function generateCustomScenes(
     const response = await result.response;
     const fullResponse = response.text();
 
-    console.log(`🎬 Generated ${numScenes} scenes response:`, fullResponse);
+
 
     // Parse the response to extract all scenes
     const scenes = parseMultipleScenesFromResponse(fullResponse, numScenes);
     
-    console.log("📝 Parsed scenes:", scenes);
+
     return scenes;
   } catch (error) {
     console.error("❌ Gemini API error:", error);
