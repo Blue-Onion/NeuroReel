@@ -94,14 +94,14 @@ export default function Page() {
     setLoading(true);
     setCurrentStep("converting");
 
-    // --- VIDEO GENERATION SIMULATION ---
+    // --- DUMMY VIDEO GENERATION SIMULATION ---
     console.log("Starting final video generation...");
     setTimeout(() => {
       setLoading(false);
       setVideoGenerated(true); // MARK VIDEOS AS GENERATED
-      alert("✅ Video Generation Finished! (Simulated)");
+      alert("✅ Video Generation Finished! (Dummy Simulation)");
       setCurrentStep("generated"); // Return to the 'generated' step to show the new video buttons
-    }, 5000); 
+    }, 3000); // Shorter timeout for dummy simulation
     // --------------------------------------------------------------------
   };
 
@@ -259,28 +259,49 @@ export default function Page() {
                 ))}
               </div>
 
-              {/* Episodes Section - Conditional Rendering */}
+              {/* Video Generation Section */}
               <div className="pt-8 border-t border-gray-200 mt-8">
-               
-                
-              
-
-                {/* Next Step Button (Conditional based on videoGenerated) */}
                 {!videoGenerated ? (
-                    <div className="mt-8 text-center">
-                      <button
-                        onClick={handleConvertToVideo}
-                        className="inline-flex items-center bg-green-600 text-white py-3.5 px-8 rounded-md font-medium hover:bg-green-700 transition-colors shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                      >
-                        <Film className="-ml-1 mr-3 h-6 w-6" /> Step 4: Generate Final Video
-                      </button>
-                    </div>
+                  <div className="text-center">
+                    <h4 className="text-lg font-semibold text-gray-900 mb-4">Ready to create videos?</h4>
+                    <button
+                      onClick={handleConvertToVideo}
+                      className="inline-flex items-center bg-green-600 text-white py-3.5 px-8 rounded-md font-medium hover:bg-green-700 transition-colors shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                    >
+                      <Play className="-ml-1 mr-3 h-6 w-6" /> Generate Final Videos
+                    </button>
+                  </div>
                 ) : (
-                    <div className="mt-8 text-center bg-indigo-50 border border-indigo-200 p-4 rounded-lg">
-                        <p className="font-semibold text-indigo-700 flex items-center justify-center gap-2">
-                            <CheckCircle className="h-5 w-5" /> Videos are ready!
-                        </p>
+                  <div className="text-center space-y-6">
+                    <div className="bg-green-50 border border-green-200 p-6 rounded-lg">
+                      <p className="font-semibold text-green-700 flex items-center justify-center gap-2 mb-4">
+                        <CheckCircle className="h-6 w-6" /> Videos successfully generated!
+                      </p>
+                      
+                      {/* Dummy Video Placeholders */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        {generatedScenes.map((_, index) => (
+                          <div key={index} className="bg-black rounded-lg overflow-hidden shadow-lg">
+                            <div className="aspect-video bg-gray-800 flex items-center justify-center relative">
+                              <div className="text-center text-white">
+                                <Play className="h-12 w-12 mx-auto mb-2 opacity-70" />
+                                <p className="text-sm font-medium">Scene {index + 1} Video</p>
+                                <p className="text-xs text-gray-400 mt-1">Dummy Video Simulation</p>
+                              </div>
+                              <div className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
+                                00:30
+                              </div>
+                            </div>
+                            <div className="p-3 bg-gray-900">
+                              <button className="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded text-sm font-medium transition-colors">
+                                Download Video
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
+                  </div>
                 )}
               </div>
 
@@ -309,10 +330,10 @@ export default function Page() {
                 <Loader className="absolute inset-0 m-auto h-20 w-20 text-indigo-600 animate-spin" />
               </div>
               <h3 className="text-2xl font-semibold text-gray-900">
-                Generating Final Video Episodes...
+                Generating Final Videos...
               </h3>
               <p className="text-gray-600 max-w-sm">
-                This process can take a few minutes as we render the cinematic scenes into high-quality videos.
+                This is a dummy simulation. In a real application, this would render actual videos.
               </p>
             </div>
           )}

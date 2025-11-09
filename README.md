@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NeuroReel: PDF to Video Content Generator
 
-## Getting Started
+NeuroReel is a cutting-edge web application built with Next.js that automates the process of transforming static PDF documents into dynamic, engaging video clips. Leverage the power of AI to extract key insights, generate accompanying scripts, and render a final video file—perfect for social media, presentations, or educational content.
 
-First, run the development server:
+---
+
+## 🚀 Key Features
+
+- **PDF Upload & Parsing**: Securely upload PDF documents and instantly parse the text content for processing.  
+- **Intelligent Clipping (LLM-Powered)**: Utilizes a sophisticated language model (LLM) to intelligently identify and "clip" the most important sections, data points, or quotes from the PDF.  
+- **Script & Voiceover Generation**: The clipped text is automatically formatted into a video script, complete with synthesized voiceover generation.  
+- **Dynamic Video Rendering**: Integrates with a Video API (or dedicated library) to compile the generated script, voiceover, and visual assets (like text overlays or placeholder images) into a shareable video file (e.g., MP4).  
+- **Responsive UI**: A fast, modern, and fully responsive user interface built on Next.js and Tailwind CSS.  
+
+---
+
+## 💻 Technology Stack
+
+| Category           | Technology               | Purpose                                                      |
+|-------------------|--------------------------|--------------------------------------------------------------|
+| Frontend/Framework | Next.js (App Router)     | React framework for optimal performance, routing, and SSR.  |
+| Styling            | TypeScript               | Type safety and better development experience.              |
+| Styling            | Tailwind CSS             | Utility-first CSS framework for rapid and responsive UI.    |
+| PDF Processing     | pdf-parse (or similar)   | Extracting text content from uploaded PDFs.                 |
+| AI/LLM             | Google Gemini API        | Intelligent content clipping, summarization, and script refinement. |
+| Video Generation   | Video SDK/API (e.g., Remotion) | Programmatic rendering of the final video file.             |
+
+---
+
+## ⚙️ Getting Started
+
+Follow these steps to set up and run NeuroReel locally.
+
+### Prerequisites
+
+- Node.js (v18+)
+- npm or yarn
+- A Google Gemini API Key for content processing
+- Credentials for your chosen Video Generation API/SDK
+
+### 1. Installation
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+git clone https://github.com/your-username/neuroreel.git
+cd neuroreel
+npm install   # or yarn install
