@@ -15,7 +15,7 @@ const Navbar = () => {
           <Link href={"/create"}>
             <Video className="" />
           </Link>
-          <Link href={"/"}>
+          <Link href={"/create"}>
             <Button className="rounded-full text-black text-md p-4 border-2 border-lime-500 hover:bg-lime-400 bg-lime-200">
                 Start Creating
             </Button>

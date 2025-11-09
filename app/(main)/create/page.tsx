@@ -3,20 +3,21 @@
 import { extractText, generateScene } from "@/actions/create";
 import React, { useState } from "react";
 // Import Lucide Icons
-import { 
-  Upload, 
-  FileText, 
-  Film, 
-  Play, 
-  RotateCw, 
-  ArrowLeft, 
-  Loader, 
+import {
+  Upload,
+  FileText,
+  Film,
+  RotateCw,
+  ArrowLeft,
+  Loader,
   CheckCircle,
-  X // Used for the error dismiss button
-} from 'lucide-react'; 
+  X,
+  Play, 
+  Download 
+} from 'lucide-react';
 
-// Extended Step Type
-type AppStep = "upload" | "extracted" | "generated" | "converting";
+// Extended Step Type: Added "converting" (loading) and "video_generated" (final)
+type AppStep = "upload" | "extracted" | "scenes_generated" | "converting" | "video_generated";
 
 export default function Page() {
   const [loading, setLoading] = useState(false);
@@ -25,8 +26,10 @@ export default function Page() {
   const [currentStep, setCurrentStep] = useState<AppStep>("upload");
   const [fileName, setFileName] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
-  // NEW STATE: Tracks if the final videos have been generated
+  
+  // VIDEO STATE (Kept with dummy links in logic below)
   const [videoGenerated, setVideoGenerated] = useState(false); 
+  const [videoUrls, setVideoUrls] = useState<string[]>([]);
 
   const clearError = () => setError(null);
 
@@ -35,7 +38,7 @@ export default function Page() {
     clearError();
     const formData = new FormData(e.currentTarget);
     const file = formData.get("file") as File | null;
-    
+
     if (!file) {
       setError("Please upload a file first!");
       return;
@@ -43,7 +46,7 @@ export default function Page() {
 
     setFileName(file.name);
     setLoading(true);
-    
+
     try {
       const text = await extractText(file);
       setExtractedText(text);
@@ -63,13 +66,15 @@ export default function Page() {
     }
     clearError();
     setLoading(true);
+
     // Reset video state when generating new scenes
     setVideoGenerated(false); 
+    setVideoUrls([]);
     
     try {
       const scenes = await generateScene(extractedText);
       setGeneratedScenes(scenes);
-      setCurrentStep("generated");
+      setCurrentStep("scenes_generated");
     } catch (err) {
       console.error(err);
       setError("Failed to generate scenes. Please try again.");
@@ -83,26 +88,44 @@ export default function Page() {
     setExtractedText("");
     setGeneratedScenes([]);
     setVideoGenerated(false); // Reset video state
+    setVideoUrls([]); // Clear videos on reset
     setCurrentStep("upload");
     setFileName("");
     const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
     if (fileInput) fileInput.value = "";
   };
-
+  
+  // VIDEO CONVERSION LOGIC with dummy links
   const handleConvertToVideo = () => {
     clearError();
     setLoading(true);
     setCurrentStep("converting");
 
-    // --- DUMMY VIDEO GENERATION SIMULATION ---
-    console.log("Starting final video generation...");
+    // Simulate video generation
     setTimeout(() => {
       setLoading(false);
-      setVideoGenerated(true); // MARK VIDEOS AS GENERATED
-      alert("✅ Video Generation Finished! (Dummy Simulation)");
-      setCurrentStep("generated"); // Return to the 'generated' step to show the new video buttons
-    }, 3000); // Shorter timeout for dummy simulation
-    // --------------------------------------------------------------------
+      setVideoGenerated(true);
+      
+      // *** DUMMY VIDEO LINKS ARE KEPT HERE ***
+      const videos = [
+        "/dummyvideo.mp4",
+      
+      ];
+      setVideoUrls(videos);
+      // ***************************************
+      
+      setCurrentStep("video_generated"); // Transition to the final step
+    }, 3000);
+  };
+  
+  // DOWNLOAD FUNCTION
+  const handleDownloadVideo = (videoUrl: string, sceneNumber: number) => {
+    const link = document.createElement('a');
+    link.href = videoUrl;
+    link.download = `scene-${sceneNumber}.mp4`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -121,8 +144,8 @@ export default function Page() {
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md relative mb-6" role="alert">
             <strong className="font-bold">Error:</strong>
             <span className="block sm:inline ml-2">{error}</span>
-            <button 
-              className="absolute top-0 bottom-0 right-0 px-4 py-3 cursor-pointer" 
+            <button
+              className="absolute top-0 bottom-0 right-0 px-4 py-3 cursor-pointer"
               onClick={clearError}
             >
               <X className="h-6 w-6 text-red-500" />
@@ -131,15 +154,15 @@ export default function Page() {
         )}
 
         <div className="bg-white rounded-xl shadow-lg p-8 ring-1 ring-gray-100">
-          {/* Step Indicators */}
+          {/* Step Indicators (4 steps) */}
           <div className="mb-8 flex justify-center items-center gap-2 sm:gap-4">
-            <StepIndicator label="Upload Document" icon={<Upload />} active={currentStep === "upload"} completed={currentStep !== "upload" && currentStep !== "converting"} />
+            <StepIndicator label="Upload Document" icon={<Upload />} active={currentStep === "upload"} completed={currentStep !== "upload"} />
             <div className="h-0.5 w-6 sm:w-8 bg-gray-200"></div>
-            <StepIndicator label="Extract Text" icon={<FileText />} active={currentStep === "extracted"} completed={currentStep === "generated" || currentStep === "converting"} />
+            <StepIndicator label="Extract Text" icon={<FileText />} active={currentStep === "extracted"} completed={currentStep !== "upload" && currentStep !== "extracted"} />
             <div className="h-0.5 w-6 sm:w-8 bg-gray-200"></div>
-            <StepIndicator label="Generate Scenes" icon={<Film />} active={currentStep === "generated"} completed={videoGenerated || currentStep === "converting"} />
+            <StepIndicator label="Generate Scenes" icon={<Film />} active={currentStep === "scenes_generated"} completed={currentStep === "converting" || currentStep === "video_generated"} />
             <div className="h-0.5 w-6 sm:w-8 bg-gray-200"></div>
-            <StepIndicator label="Generate Video" icon={<Play />} active={currentStep === "converting" || videoGenerated} completed={videoGenerated} />
+            <StepIndicator label="Generate Video" icon={<Play />} active={currentStep === "converting" || currentStep === "video_generated"} completed={currentStep === "video_generated"} />
           </div>
 
           {/* UPLOAD Step (1/4) */}
@@ -166,7 +189,7 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-              
+
               <button
                 type="submit"
                 disabled={loading}
@@ -200,11 +223,11 @@ export default function Page() {
                   </span>
                 )}
               </div>
-              
+
               <div className="bg-gray-50 border border-gray-200 rounded-lg p-5 max-h-72 overflow-y-auto shadow-inner text-sm leading-relaxed text-gray-700">
                 <p className="whitespace-pre-wrap">{extractedText || "No text extracted."}</p>
               </div>
-              
+
               <div className="flex flex-col sm:flex-row gap-4">
                 <button
                   onClick={handleGenerateScenes}
@@ -233,8 +256,8 @@ export default function Page() {
             </div>
           )}
 
-          {/* GENERATED Step (3/4 & COMPLETE) */}
-          {currentStep === "generated" && (
+          {/* SCENES GENERATED Step (3/4) - Displays scenes and CTA for video */}
+          {currentStep === "scenes_generated" && (
             <div className="space-y-8">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <h3 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
@@ -258,66 +281,15 @@ export default function Page() {
                   </div>
                 ))}
               </div>
-
-              {/* Video Generation Section */}
-              <div className="pt-8 border-t border-gray-200 mt-8">
-                {!videoGenerated ? (
-                  <div className="text-center">
-                    <h4 className="text-lg font-semibold text-gray-900 mb-4">Ready to create videos?</h4>
-                    <button
-                      onClick={handleConvertToVideo}
-                      className="inline-flex items-center bg-green-600 text-white py-3.5 px-8 rounded-md font-medium hover:bg-green-700 transition-colors shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                    >
-                      <Play className="-ml-1 mr-3 h-6 w-6" /> Generate Final Videos
-                    </button>
-                  </div>
-                ) : (
-                  <div className="text-center space-y-6">
-                    <div className="bg-green-50 border border-green-200 p-6 rounded-lg">
-                      <p className="font-semibold text-green-700 flex items-center justify-center gap-2 mb-4">
-                        <CheckCircle className="h-6 w-6" /> Videos successfully generated!
-                      </p>
-                      
-                      {/* Dummy Video Placeholders */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                        {generatedScenes.map((_, index) => (
-                          <div key={index} className="bg-black rounded-lg overflow-hidden shadow-lg">
-                            <div className="aspect-video bg-gray-800 flex items-center justify-center relative">
-                              <div className="text-center text-white">
-                                <Play className="h-12 w-12 mx-auto mb-2 opacity-70" />
-                                <p className="text-sm font-medium">Scene {index + 1} Video</p>
-                                <p className="text-xs text-gray-400 mt-1">Dummy Video Simulation</p>
-                              </div>
-                              <div className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
-                                00:30
-                              </div>
-                            </div>
-                            <div className="p-3 bg-gray-900">
-                              <button className="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded text-sm font-medium transition-colors">
-                                Download Video
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-4 mt-8 pt-6 border-t border-gray-200">
-                <button
-                  onClick={handleReset}
-                  className="flex-1 inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-gray-700 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors"
-                >
-                  <RotateCw className="-ml-1 mr-3 h-5 w-5" /> Start Over
-                </button>
-                <button
-                  onClick={() => setCurrentStep("extracted")}
-                  className="px-6 py-3 border border-gray-300 text-gray-700 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors flex items-center justify-center gap-2"
-                >
-                  <ArrowLeft className="h-5 w-5" /> Back to Text
-                </button>
+              
+              <div className="pt-8 border-t border-gray-200 mt-8 text-center">
+                  <h4 className="text-lg font-semibold text-gray-900 mb-4">Ready to create videos?</h4>
+                  <button
+                    onClick={handleConvertToVideo}
+                    className="inline-flex items-center bg-green-600 text-white py-3.5 px-8 rounded-md font-medium hover:bg-green-700 transition-colors shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                  >
+                    <Play className="-ml-1 mr-3 h-6 w-6" /> Generate Final Videos
+                  </button>
               </div>
             </div>
           )}
@@ -337,13 +309,67 @@ export default function Page() {
               </p>
             </div>
           )}
+          
+          {/* VIDEO GENERATED Step (Final Display - ONLY Videos and Reset) */}
+          {currentStep === "video_generated" && (
+            <div className="space-y-8">
+                <div className="bg-green-50 border border-green-200 p-6 rounded-lg text-center">
+                    <p className="font-semibold text-green-700 flex items-center justify-center gap-2 mb-6">
+                        <CheckCircle className="h-6 w-6" /> Videos successfully generated!
+                    </p>
+
+                    {/* Actual Video Players */}
+                    <div className="grid grid-cols-1 gap-4">
+                        {videoUrls.map((videoUrl, index) => (
+                            <div key={index} className="bg-black rounded-lg overflow-hidden shadow-lg">
+                                <div className="aspect-video bg-gray-800 flex items-center justify-center relative">
+                                    <video 
+                                        controls 
+                                        className="w-full h-full object-contain"
+                                        poster="/video-thumbnail.jpg" // Optional: add a thumbnail
+                                    >
+                                        <source src={videoUrl} type="video/mp4" />
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                <div className="p-3 bg-gray-900">
+                                    <button 
+                                        onClick={() => handleDownloadVideo(videoUrl, index + 1)}
+                                        className="w-full inline-flex items-center justify-center bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded text-sm font-medium transition-colors"
+                                    >
+                                        <Download className="mr-2 h-4 w-4" />
+                                        Download Video {index + 1}
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                
+                {/* Reset and Back to Text buttons */}
+                <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200">
+                    <button
+                      onClick={handleReset}
+                      className="flex-1 inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-gray-700 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors"
+                    >
+                      <RotateCw className="-ml-1 mr-3 h-5 w-5" /> Start Over
+                    </button>
+                    <button
+                      onClick={() => setCurrentStep("extracted")}
+                      className="px-6 py-3 border border-gray-300 text-gray-700 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors flex items-center justify-center gap-2"
+                    >
+                      <ArrowLeft className="h-5 w-5" /> Back to Text
+                    </button>
+                  </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-// Helper component for step indicators
+// Helper component for step indicators (UNCHANGED)
 interface StepIndicatorProps {
   label: string;
   icon: React.ReactNode;
@@ -358,7 +384,6 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({ label, icon, active, comp
       ${completed ? 'bg-indigo-600 text-white' : active ? 'bg-indigo-500 text-white shadow-md' : 'bg-gray-100 text-gray-500 border border-gray-200'}
       transition-all duration-300 ease-in-out
     `}>
-      {/* Ensure Lucide icons are sized correctly inside the div */}
       {completed ? <CheckCircle className="h-5 w-5" /> : React.cloneElement(icon as React.ReactElement, { className: 'h-5 w-5' })}
     </div>
     <span className={`
