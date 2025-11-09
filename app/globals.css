@@ -42,13 +42,7 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 }
-.gradient-title {
-  font-family: var(--font-archivo-black), sans-serif;
-  font-weight: 400;
 
-  display: inline-block;
-  letter-spacing: 0.5px;
-}
 
 :root {
   --radius: 0.625rem;

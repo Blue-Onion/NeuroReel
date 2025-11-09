@@ -31,7 +31,7 @@ export default function RootLayout({
 
     <html lang="en">
       <body
-        className={`${inter.variable} ${archivoBlack.variable} antialiased bg-white text-gray-900`}
+        className={`${inter.variable}antialiased bg-white text-gray-900`}
         >
         {/* Navbar */}
         <div className="fixed top-4 left-0 w-full z-50">

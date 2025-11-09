@@ -60,7 +60,7 @@ export async function generateScene(text: string): Promise<string[]> {
 
     const prompt = `
       You are a creative screenwriter. Based on the following extracted text,
-      create 2 distinct cinematic scenes that capture different aspects or interpretations of the text.
+      create 3 distinct cinematic scenes that capture different aspects or interpretations of the text.
 
       RULES:
       - Create exactly 2 different scenes
@@ -79,6 +79,9 @@ export async function generateScene(text: string): Promise<string[]> {
 
       SCENE 2:
       [Second cinematic scene here]
+
+      SCENE #:
+      [Third cinematic scene here]
     `;
 
     const result = await model.generateContent(prompt);
@@ -143,7 +146,7 @@ export async function generateCustomScenes(
 
   try {
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
-    const numScenes = options?.numberOfScenes || 2;
+    const numScenes = options?.numberOfScenes || 5;
 
     let prompt = `
       You are a creative screenwriter. Based on the following extracted text,
@@ -162,7 +165,7 @@ export async function generateCustomScenes(
       RULES:
       - Create exactly ${numScenes} different scenes
       - Each scene should have a unique perspective, style, or focus
-      - Return them as Scene 1, Scene 2, etc. clearly separated
+      - Return them as Scene 1, Scene 2,Scene 3 clearly separated
       - Each scene should be 2-4 paragraphs long
       - Make them genuinely different in tone, perspective, or interpretation
 
