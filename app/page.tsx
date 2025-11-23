@@ -108,10 +108,10 @@ export default function Home(): JSX.Element {
   return (
     <main className="space-y-6">
       {/* Hero Section */}
-      <section className="min-h-screen flex justify-center items-center bg-gradient-to-b from-blue-300 via-gray-200 to-red-400">
+      <section className="min-h-screen flex justify-center items-center bg-linear-to-b from-blue-300 via-gray-200 to-red-400">
         <div className="mx-auto flex flex-col items-center justify-center container space-y-8">
           <div className="flex flex-col items-center justify-center gap-5">
-            <h1 className="text-6xl max-w-3xl gradient-title text-center">
+            <h1 className="text-6xl max-w-3xl font-bold text-center">
               Turn training into unforgettable stories.
             </h1>
             <p className="text-muted-foreground text-center max-w-4xl">
