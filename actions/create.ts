@@ -2,7 +2,7 @@
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import FormData from "form-data";
-import fetch from "node-fetch";
+
 import { runDirector } from "../lib/agents/director";
 import { redirect } from "next/navigation";
 
