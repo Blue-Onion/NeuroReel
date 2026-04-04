@@ -12,6 +12,27 @@ User uploads a PDF/training document + optional employee photos (multiple angles
 - Creates a full production plan (number of scenes, style, tone, branding).
 - Uses tool calling to manage the entire pipeline (this involves 25+ calls — planning, delegation, review, retry loops, state management).
 
+```mermaid
+graph TD
+    %% Input
+    U[User] -->|Upload PDF/Doc + Photos| D((Director Agent\nGemini 3 Pro))
+
+    %% Director -> Sub-Agents
+    D -->|Calls| A1[Document Analyzer / Deep Research]
+    D -->|Calls| A2[Scriptwriter]
+    D -->|Calls| A3[Set Designer]
+    D -->|Calls| A4[Character Artist]
+    D -->|Calls| A5[Video Producer\nVeo 3.1]
+    D -->|Calls| A6[Audio Specialist]
+    D -->|Calls| A7[Editor]
+
+    %% Output
+    A7 -->|Produces| O[Final Cinematic\nTraining Video]
+    
+    classDef agent fill:#f9f,stroke:#333,stroke-width:2px;
+    class D agent;
+```
+
 ### 3. Sub-Agent / Tool Layer
 Each is a reusable function the Director calls:
 - **Document Analyzer / Deep Research** → Analyzes and expands the document content in real time.
@@ -27,6 +48,21 @@ The Director doesn't call everything once. It continuously loops:
 `Generate → Review Quality → Fix Issues → Regenerate Specific Parts`
 - State is maintained so it knows which scenes are complete.
 - Total: 25+ tool calls in one run to ensure high quality outputs.
+
+```mermaid
+graph LR
+    Plan[Generate Plan] --> Del[Delegate to Tools]
+    Del --> Gen[Generate Content]
+    Gen --> Rev{Review Quality}
+    
+    Rev -->|Issue Detected| Fix[Fix/Regenerate Portion]
+    Fix --> Rev
+    
+    Rev -->|Approved| State[Update Complete State]
+    State --> Next{All Scenes Done?}
+    Next -->|No| Del
+    Next -->|Yes| Finish([Final Output])
+```
 
 ### 5. Output
 - A short, cinematic, multi-scene video (bite-sized for training).
@@ -48,6 +84,27 @@ The live product has evolved beyond a pure Google stack for maximum quality:
   6. Stitching with FFmpeg.
   7. Add AI assessments/quizzes for retention.
 - **Output**: Mobile-first Netflix-style training modules designed for high engagement (aims for 95% retention vs 10% for text).
+
+```mermaid
+flowchart TD
+    In[Input: PDF / Concept / Photos] --> S1[AI Structuring: Lessons & Scenes]
+    S1 --> S2[Storyboarding & Style Gen]
+    S1 --> C[Character Casting / Consistency]
+    S2 --> V[Video Clip Sandbox: Veo 3.1]
+    C --> V
+    In --> A[Audio Generation]
+    
+    subgraph Audio Processing
+        A --> E[Voice Cloning: ElevenLabs]
+        E --> L[Lip Sync: Sync Labs]
+    end
+    
+    V --> F[Video/Audio Stitching: FFmpeg]
+    L --> F
+    
+    F --> Q[AI Assessment/Quiz Generation]
+    Q --> Out[Netflix-Style Training Module]
+```
 
 ---
 
