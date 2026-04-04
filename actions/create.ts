@@ -60,7 +60,7 @@ export async function generateScene(text: string): Promise<string[]> {
 
     const prompt = `
       You are a creative screenwriter. Based on the following extracted text,
-      create 3 distinct cinematic scenes that capture different aspects or interpretations of the text.
+      create 2 distinct cinematic scenes that capture different aspects or interpretations of the text.
 
       RULES:
       - Create exactly 2 different scenes
@@ -224,4 +224,56 @@ function parseMultipleScenesFromResponse(response: string, numberOfScenes: numbe
   }
   
   return scenes.slice(0, numberOfScenes);
+}
+
+// 🎥 Veo 3 AI Video Generation (stub/integration)
+export interface Veo3VideoRequest {
+  scene: string;
+  starImageUrl?: string; // URL or base64 for star/avatar
+  durationSeconds?: number; // Defaults to 8 as per requirements
+  style?: string; // e.g. "cinematic", "documentary"
+}
+
+export interface Veo3VideoResult {
+  videoUrl: string; // Can also be a buffer if returning raw data
+  responseMeta?: any;
+}
+
+/**
+ * Calls Veo 3 AI with given scene and star, returning a video URL (or buffer).
+ * TODO: - Fill out actual Veo 3 API endpoint, authentication, file upload protocol.
+ *       - Integrate star avatar/image as per API docs.
+ *       - Robust error handling + return useful error diagnostics.
+ */
+export async function generateVeo3Video({
+  scene,
+  starImageUrl,
+  durationSeconds = 8,
+  style
+}: Veo3VideoRequest): Promise<Veo3VideoResult> {
+  if (!scene) throw new Error("Veo3: Scene is required");
+  // If star image is required by the API:
+  // if (!starImageUrl) throw new Error("Veo3: Star image/avatar required");
+
+  // --- TODO: Replace below with actual Veo 3 AI video API call ---
+  try {
+    // Example API call structure:
+    // const res = await fetch("https://veo3.api/video", {
+    //   method: "POST",
+    //   headers: { "Authorization": `Bearer ${process.env.VEO3_API_KEY}` },
+    //   body: JSON.stringify({ scene, starImageUrl, durationSeconds, style })
+    // });
+    // if (!res.ok) throw new Error(`Veo3 API error: ${res.statusText}`);
+    // const data = await res.json();
+    // return { videoUrl: data.url, responseMeta: data };
+
+    // For now, return a placeholder
+    return {
+      videoUrl: "https://example.com/veo3/generated-video.mp4",
+      responseMeta: { stub: true, input: { scene, starImageUrl, durationSeconds, style } }
+    };
+  } catch (err: any) {
+    console.error("Veo3 API Integration Error", err);
+    throw new Error("Failed to generate video with Veo 3 AI. " + (err?.message || err));
+  }
 }

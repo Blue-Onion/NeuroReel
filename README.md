@@ -1,46 +1,68 @@
-# NeuroReel: PDF to Video Content Generator
+# Neuroflix (Evolution of NeuroReel): Agentic AI Video Production System
 
-NeuroReel is a cutting-edge web application built with Next.js that automates the process of transforming static PDF documents into dynamic, engaging video clips. Leverage the power of AI to extract key insights, generate accompanying scripts, and render a final video file—perfect for social media, presentations, or educational content.
+An agentic AI video production system that orchestrates a full video production pipeline to transform documents, PDFs, and ideas into multi-scene, cinematic training videos. 
+
+## 🎬 Core Technical Flow
+
+### 1. Input
+User uploads a PDF/training document + optional employee photos (multiple angles for consistency).
+
+### 2. Director Agent (Main Orchestrator — Gemini 3 Pro)
+- Receives the input.
+- Creates a full production plan (number of scenes, style, tone, branding).
+- Uses tool calling to manage the entire pipeline (this involves 25+ calls — planning, delegation, review, retry loops, state management).
+
+### 3. Sub-Agent / Tool Layer
+Each is a reusable function the Director calls:
+- **Document Analyzer / Deep Research** → Analyzes and expands the document content in real time.
+- **Scriptwriter** → Turns dry text into engaging, conversational scripts with scenes and dialogue.
+- **Set Designer** → Generates detailed scene descriptions, backgrounds, and props (using image gen like Imagen/Nano Banana or Gemini vision).
+- **Character Artist** → Creates or refines consistent character references from uploaded photos.
+- **Video Producer** → Calls Veo 3.1 (or equivalent) to generate individual video clips per scene.
+- **Audio Specialist** → Generates voiceover and music.
+- **Editor** → Reviews clips, adds transitions, ensures timing/lip-sync, and stitches the final video (FFmpeg-like logic).
+
+### 4. Orchestration Magic
+The Director doesn't call everything once. It continuously loops: 
+`Generate → Review Quality → Fix Issues → Regenerate Specific Parts`
+- State is maintained so it knows which scenes are complete.
+- Total: 25+ tool calls in one run to ensure high quality outputs.
+
+### 5. Output
+- A short, cinematic, multi-scene video (bite-sized for training).
+- Consistent characters that look like real employees.
+- Natural dialogue, music, and smooth editing.
 
 ---
 
-## 🚀 Key Features
+## 🚀 Current Production Version (Neuroflix.sg)
+The live product has evolved beyond a pure Google stack for maximum quality:
 
-- **PDF Upload & Parsing**: Securely upload PDF documents and instantly parse the text content for processing.  
-- **Intelligent Clipping (LLM-Powered)**: Utilizes a sophisticated language model (LLM) to intelligently identify and "clip" the most important sections, data points, or quotes from the PDF.  
-- **Script & Voiceover Generation**: The clipped text is automatically formatted into a video script, complete with synthesized voiceover generation.  
-- **Dynamic Video Rendering**: Integrates with a Video API (or dedicated library) to compile the generated script, voiceover, and visual assets (like text overlays or placeholder images) into a shareable video file (e.g., MP4).  
-- **Responsive UI**: A fast, modern, and fully responsive user interface built on Next.js and Tailwind CSS.  
-
----
-
-## 💻 Technology Stack
-
-| Category           | Technology               | Purpose                                                      |
-|-------------------|--------------------------|--------------------------------------------------------------|
-| Frontend/Framework | Next.js (App Router)     | React framework for optimal performance, routing, and SSR.  |
-| Styling            | TypeScript               | Type safety and better development experience.              |
-| Styling            | Tailwind CSS             | Utility-first CSS framework for rapid and responsive UI.    |
-| PDF Processing     | pdf-parse (or similar)   | Extracting text content from uploaded PDFs.                 |
-| AI/LLM             | Google Gemini API        | Intelligent content clipping, summarization, and script refinement. |
-| Video Generation   | Video SDK/API (e.g., Remotion) | Programmatic rendering of the final video file.             |
+- **Input**: PDF, deck, notes, or raw idea + team photos.
+- **Process**:
+  1. Upload content → AI structures it into lessons/scenes.
+  2. Cast characters (upload photos → consistent appearance across scenes).
+  3. Generate storyboard + branded style.
+  4. Multi-scene video generation (Veo 3.1 for clips).
+  5. Voice cloning (ElevenLabs) + lip-sync (Sync Labs).
+  6. Stitching with FFmpeg.
+  7. Add AI assessments/quizzes for retention.
+- **Output**: Mobile-first Netflix-style training modules designed for high engagement (aims for 95% retention vs 10% for text).
 
 ---
 
-## ⚙️ Getting Started
+## 🛠 Features Dashboard
+- Upload PDF + employee face photos.
+- Automatic planning → delegation → iteration → final multi-scene cinematic video.
+- Dashboard showing live tool calls and agent progress.
+- Output: Short Netflix-style training video with consistent characters and perfect lip-sync.
 
-Follow these steps to set up and run NeuroReel locally.
+---
 
-### Prerequisites
-
-- Node.js (v18+)
-- npm or yarn
-- A Google Gemini API Key for content processing
-- Credentials for your chosen Video Generation API/SDK
-
-### 1. Installation
-
-```bash
-git clone https://github.com/your-username/neuroreel.git
-cd neuroreel
-npm install   # or yarn install
+## ⚠️ Key Challenges Solved
+Building this pipeline required overcoming these major hurdles:
+1. **Maintaining character consistency** across different video generations.
+2. **Cost & speed optimization** for Veo calls (expensive for many scenes).
+3. **Reliable lip-sync** and audio-video alignment.
+4. **Robust error handling** in the 25+ tool call retry loop.
+5. **State management** for long-running agent workflows.
