@@ -49,15 +49,15 @@ export default function DashboardPage() {
 
   if (!state) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-900">
+      <div className="min-h-screen flex items-center justify-center bg-slate-900 rounded-3xl">
         <Loader2 className="animate-spin text-blue-500" size={48} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 pt-24 pb-12 px-6">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div className="min-h-screen bg-slate-950 text-slate-100 pb-12 px-6 rounded-3xl overflow-hidden transition-all duration-700 animate-in fade-in">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 p-8">
         
         {/* Left Column: Progress & Logs */}
         <div className="lg:col-span-1 space-y-6">
@@ -76,11 +76,13 @@ export default function DashboardPage() {
             </div>
 
             <div className="flex items-center gap-3 py-4 border-y border-slate-800">
-              <div className={`p-2 rounded-lg ${state.status === 'processing' ? 'bg-blue-900/50 text-blue-400' : 'bg-green-900/50 text-green-400'}`}>
-                {state.status === 'processing' ? <Loader2 className="animate-spin" /> : <CheckCircle />}
+              <div className={`p-2 rounded-lg ${state.status === 'processing' ? 'bg-blue-900/50 text-blue-400' : state.status === 'failed' ? 'bg-red-900/50 text-red-400' : 'bg-green-900/50 text-green-400'}`}>
+                {state.status === 'processing' ? <Loader2 className="animate-spin" /> : state.status === 'failed' ? <AlertCircle /> : <CheckCircle />}
               </div>
               <div>
-                <p className="font-bold">{state.status === 'processing' ? 'Engine is Running' : 'Production Complete'}</p>
+                <p className="font-bold">
+                  {state.status === 'processing' ? 'Engine is Running' : state.status === 'failed' ? 'Production Failed' : 'Production Complete'}
+                </p>
                 <p className="text-xs text-slate-400">{state.id}</p>
               </div>
             </div>
@@ -132,6 +134,12 @@ export default function DashboardPage() {
                         Download Export (.mp4)
                       </button>
                    </div>
+                </div>
+              ) : state.status === 'failed' ? (
+                <div className="text-center space-y-4 p-8">
+                   <AlertCircle size={64} className="text-red-500 mx-auto" />
+                   <h3 className="text-xl font-bold">Production Halted</h3>
+                   <p className="text-slate-400">{state.error || "An unknown error occurred during generation."}</p>
                 </div>
               ) : (
                 <div className="text-center space-y-6 max-w-sm px-6">
