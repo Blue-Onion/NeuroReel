@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Archivo_Black, Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
-import { ClerkProvider } from "@clerk/nextjs";
 const archivoBlack = Archivo_Black({
   subsets: ["latin"],
   weight: "400",
@@ -26,9 +25,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-<ClerkProvider>
-
-
     <html lang="en">
       <body
         className={`${inter.variable}antialiased bg-white text-gray-900`}
@@ -55,7 +51,5 @@ export default function RootLayout({
         </footer>
       </body>
     </html>
-          </ClerkProvider>
-
   );
 }

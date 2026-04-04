@@ -3,6 +3,8 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import FormData from "form-data";
 import fetch from "node-fetch";
+import { runDirector } from "../lib/agents/director";
+import { redirect } from "next/navigation";
 
 // 🧾 OCR.Space response types
 interface OCRParsedResult {
@@ -277,3 +279,27 @@ export async function generateVeo3Video({
     throw new Error("Failed to generate video with Veo 3 AI. " + (err?.message || err));
   }
 }
+export async function startProductionAction(formData: FormData) {
+  const file = formData.get("file") as File;
+  const styleRaw = formData.get("style");
+  const style = typeof styleRaw === "string" ? styleRaw : "cinematic";
+
+  if (!file || file.size === 0) {
+    throw new Error("No file uploaded or file is empty");
+  }
+
+  const runId = crypto.randomUUID();
+
+  // Background extraction & orchestration
+  (async () => {
+    try {
+      const rawText = await extractText(file);
+      await runDirector(runId, rawText, { style });
+    } catch (err) {
+      console.error("Critical Failure in Production Engine:", err);
+    }
+  })();
+
+  redirect(`/dashboard/${runId}`);
+}
+
