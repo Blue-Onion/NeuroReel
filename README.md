@@ -1,6 +1,6 @@
 # Neuroflix (Evolution of NeuroReel): Agentic AI Video Production System
 
-An agentic AI video production system that orchestrates a full video production pipeline to transform documents, PDFs, and ideas into multi-scene, cinematic training videos. 
+An agentic AI video production system that orchestrates a full video production pipeline to transform documents, PDFs, and ideas into multi-scene, cinematic training videos.  
 
 ## 🎬 Core Technical Flow
 
